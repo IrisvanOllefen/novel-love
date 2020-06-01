@@ -1,0 +1,26 @@
+{
+  "name": "express-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "lint": "eslint .",
+    "dev": "nodemon --ext js,hbs --watch views --watch index.js index.js"
+  },
+  "author": "Iris van Ollefen",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^7.1.0",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "hbs": "^4.1.1",
+    "mongoose": "^5.9.16",
+    "multer": "^1.4.2"
+  }
+}

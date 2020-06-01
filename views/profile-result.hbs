@@ -1,0 +1,19 @@
+{{#> layout }}
+<main>
+    <h1>Your favorite books are:</h1>
+    <ul>
+        <!-- In here, the templates are rendered so the results from the form will appear on the page. -->
+        <li>{{ body.book1 }}</li>
+        <li>{{ body.book2 }}</li>
+        <li>{{ body.book3 }}</li>
+    </ul>
+    <h1>You are currently reading:</h1>
+    <ul>
+        <li>{{ body.bookcurrent }}</li>
+    </ul>
+    <h2 class="h2v2">You can now look for matches!</h2>
+    <form action="/">
+        <input class="submitButton" type="submit" value="Go!" />
+    </form>
+</main>
+{{/layout}}

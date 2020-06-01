@@ -1,0 +1,28 @@
+{{#> layout }}
+<main>
+    <h1>You have a new match!</h1>
+
+    <img src="/uploads/{{this.profilepicture}}" alt="Profile Picture" width="200">
+    <h2>{{this.name}}</h2>
+
+    <section class="favoriteBooks">
+        <h3>These are {{this.name}}'s favorite books: </h3>
+        <p> {{match.favoriteBooks.[0]}}</p>
+        <p> {{match.favoriteBooks.[1]}}</p>
+        <p> {{match.favoriteBooks.[2]}}</p>
+    </section>
+
+    <section class="currentlyReading">
+        <h3>This is the book {{this.name}} is currently reading: </h3>
+        <p> {{match.currentBook}}</p>
+    </section>
+
+    <section class="talkButton">
+        <button type="button">
+            Start Talking!
+        </button>
+    </section>
+
+</main>
+
+{{/layout}}
