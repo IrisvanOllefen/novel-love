@@ -98,6 +98,7 @@ main h1 {
 
 .matches {
   display: flex;
+  flex-direction: row;
 }
 
 .match {
@@ -146,9 +147,53 @@ main h1 {
   margin-bottom: 1rem;
 }
 
-input[type="submit"] {
+.editprofile input[type="submit"] {
   background-color: #cdc2c0;
   padding: 1rem;
   width: inherit;
   margin-top: 2rem;
+}
+
+/* when screen width too small, header becomes flexed in row */
+
+@media screen and (max-width: 955px) {
+  main {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    padding-bottom: 1rem;
+  }
+  .header {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header form {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .header form input,
+  select {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  main {
+    padding-left: auto;
+    padding-right: auto;
+    margin: 0;
+    padding-bottom: 1rem;
+  }
+
+  .matches {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .match img {
+    width: 100%;
+  }
 }

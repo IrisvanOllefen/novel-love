@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "lint": "eslint .",
-    "dev": "nodemon --ext js,hbs --watch views --watch index.js index.js"
+    "dev": "nodemon index.js"
   },
   "author": "Iris van Ollefen",
   "license": "ISC",
