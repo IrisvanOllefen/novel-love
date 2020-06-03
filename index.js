@@ -1,55 +1,62 @@
-// first all requires
-const express = require("express");
-const hbs = require("hbs");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const session = require("express-session");
-const multer = require("multer");
-const UserModel = require("./models/user");
+// REQUIRE ALL NEEDED PACKAGES
+const express = require("express"); // SERVER
+const hbs = require("hbs"); // TEMPLATING
+const mongoose = require("mongoose"); // MONGODB
+const bodyParser = require("body-parser"); // FORM INPUT ENCODER
+const session = require("express-session"); // SESSIONS
+const multer = require("multer"); // FILE UPLOADS
+const UserModel = require("./models/user"); // SELF-MADE USER SCHEMA/MODEL
 
-// add .env support
-require("dotenv").config();
+// FOR EVERYTHING THAT HAD TO DO WITH MONGOOSE/SCHEMA'S/MODELS ETC. I USED THE OFFICIAL MONGOOSE DOCUMENTATION: https://mongoosejs.com/docs/guide.html
 
-// variable with url from mongodb
+require("dotenv").config(); // CONFIGURATING ENV FILE TO BLOCK OUT SENSITIVE INFORMATION FOR WHEN I COMMIT MY PROJECT TO GITHUB
+// SOURCE: https://www.npmjs.com/package/dotenv
+
+// THE URL TO MY DATABASE
 const MONGO_URL = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/test?retryWrites=true&w=majority`;
+// SOURCE: THE MONGODB DOCUMENTATION/GETTING STARTED GUIDE
 
-// then all other variables
+// WRITING ALL OTHER VARIABLES
 const app = express();
 
-// using multer to make uploading images to the profile possible
+// USING MULTER: UPLOADING IMAGES TO PROFILES
+// SOURCE: https://www.npmjs.com/package/multer
 const upload = multer({
-  dest: "public/uploads/",
-  limits: { fileSize: 5000000 },
+  dest: "public/uploads/", // THE DESTINATION FOLDER FOR UPLOADED IMAGES
+  limits: { fileSize: 5000000 }, // PUTTING A LIMIT ON FILE SIZE
   fileFilter: function fileFilter(req, file, cb) {
-    // if the mimetype of an uploaded image is not image/png or image/jpeg, the callback will return false and the file can not be uploaded
+    // CREATING A FUNCTION TO FILTER OUT ALLOWED FILES WITH A CALLBACK
     if (file.mimetype === "image/png") {
+      // MIMETYPE HAS TO BE IMAGE/PNG, IMAGE/JPEG (OR IMAGE/JPG) FOR THE CALLBACK TO RETURN TRUE
       cb(null, true);
     } else if (file.mimetype === "image/jpeg") {
       cb(null, true);
     } else {
+      // IF THE MIMETYPE IS ANYTHING ELSE, CALLBACK WILL RETURN FALSE
       cb(null, false);
     }
   },
 });
 
-// settings
-// the view engine is hbs, it gives res.render, to render a file and send it to the browser
-app.set("view engine", "hbs");
+// CREATING SETTINGS
 
-// creating partials
+// THE VIEW ENGINE IS HBS (HANDLEBARS FOR EXPRESS)
+app.set("view engine", "hbs"); // IT GIVES A res.render TO RENDER A FILE AND SEND IT TO THE BROWSER
+
+// CREATNG PARTIALS
 hbs.registerPartials(__dirname + "/views/partials", (error) => {
+  // USING _dirname TO CREATE ABSOLUTE PATHS
   console.error(error);
 });
 
-// calling all middlewares here
-// serving static files
-app.use(express.static("public"));
+// USING AND CALLING MIDDLEWARES
 
-// bodyparser is used to parse form data
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static("public")); // SERVING STATIC FILES IN THE PUBLIC MAP (IMAGES, STYLESHEET, ETC.)
 
-// this makes it possible to save data (session data like a userId) inbetween requests
+app.use(bodyParser.urlencoded({ extended: false })); // bodyParser IS USED FO PARSE FORM DATA
+
 app.use(
+  // THIS MIDDLEWARE FUNCTION MAKES IT POSSIBLE TO SAVE DATA (SESSION DATA LIKE A userId) INBETWEEN REQUESTS
   session({
     secret: "uir3948uri934i9320oi",
     resave: false,
@@ -57,96 +64,104 @@ app.use(
   })
 );
 
-//
+// APPLYING SESSION MIDDLEWARE IN AN ASYNCHRONOUS FUNCTION
+// SOURCE: https://github.com/expressjs/session
 app.use(async (req, res, next) => {
   if (req.session.userId) {
-    // all information about the logged in user will be available under req.user
-    const user = await UserModel.findById(req.session.userId)
-      // populate queries all matches from the user collection
-      .populate("matches")
-      // this just is to execute the query
-      .exec();
+    const user = await UserModel.findById(req.session.userId) // ALL INFORMATION ABOUT THE LOGGED IN USER WILL BE AVAILABLE UNDER REQ.USER
+      .populate("matches") // POPULATE (MONGOOSE SYNTAX) QUERIES ALL MATCHES FROM THE USER COLLECTION
+      .exec(); // THIS IS USED TO EXECUTE THE QUERY
     if (user) {
       req.user = user;
     }
   }
-  // pass to the next middleware function
-  next();
+  next(); // USING next(); TO PASS TO THE NEXT MIDDLEWARE FUNCTION
 });
 
-// homepage route
+// ROUTE TO THE HOMEPASE
 app.get("/", async (req, res) => {
-  // looking for all users in the UserModel to make them available in the header to switch users
-  const users = await UserModel.find({}).exec();
-  // rendering the index page, giving it a specifc title for inside the head, and giving it the users for in the drop down menu
+  const users = await UserModel.find({}).exec(); // LOOKING FOR ALL USERS IN UserModel TO MAKE THEM AVAILABLE IN A DROP DOWN IN THE HEADER TO SWITCH USERS/ACCOUNTS
   res.render("index", {
-    title: "Chat Overview Page",
-    users,
-    // check if a user is logged in to show matches, if user is not logged in, you return null so no matches are visible.
-    matches: req.user ? req.user.matches : null,
+    // RENDERING THE INDEX PAGE
+    title: "Chat Overview Page", // GIVING IT A SPECIFIC TITLE FOR INSIDE THE HEAD (USED TEMPLATE FOR THIS IN .hbs FILE)
+    users, // THE USERS AVAILABLE IN THE DROP DOWN MENU
+    matches: req.user ? req.user.matches : null, // CHECKING IF A USER IS LOGGED IN TO SHOW ITS MATCHES. IF THE USER IS NOT LOGGED IN, null WILL BE RETURNED TO MAKE SURE NO MATCHES ARE VISIBLE
   });
 });
 
-// login route
+// LOGIN ROUTE
 app.post("/login", async (req, res) => {
-  // check if the provided user exists in the database
-  const user = await UserModel.findById(req.body.userId).exec();
-  // if the user exists in the database, set the userId session variable to the returned user
+  const user = await UserModel.findById(req.body.userId).exec(); // CHECKING IF THE PROVIDED USER EXISTS IN THE DATABASE
   if (user) {
-    // I am using user._id because the user._id in my database is more reliable than the req.body.userId. Because req.body.userId comes from the user.
-    req.session.userId = user._id;
+    // AND IF THE USER EXISTS IN THE DATABASE, THE userId WILL BE SET AND THE SESSION VARIABLE WILL BE RETURNED TO THE USER
+    req.session.userId = user._id; // USING user._id BECAUSE THE user._id IN MY DATABASE IS MORE RELIABLE THAN THE req.body.userId IN THE BODY BECAUSE THAT ONE COMES FROM THE USER.
   }
-  res.redirect("/");
+  res.redirect("/"); // AFTER SELECTING A USER, YOU GET REDIRECTED TO THE HOMEPAGE
 });
 
+// EDIT PROFILE ROUTE
 app.get("/edit-profile", async (req, res) => {
-  // if a user is not logged in, you will be redirected to the home page so you can't get to the edit profile page
   if (!req.user) {
+    // IF A USER IS NOT LOGGED IN, YOU WILL BE REDIRECTED TO THE HOMEPAGE AGAIN
     res.redirect("/");
     return;
   }
-  // render the edit profile page
   res.render("edit-profile", {
-    title: "Edit Profile Page",
+    // RENDERING EDIT-PROFILE PAGE
+    title: "Edit Profile Page", // GIVING THE PAGE ITS OWN HEAD TITLE
     // making sure it contains the req.user properties (name and age) in the input fields
-    user: req.user,
+    user: req.user, // MAKING SURE IT CONTAINS THE req.user PROPERTIES LIKE NAME AND AGE IN THE INPUT FIELD
   });
 });
 
+// POST METHOD ROUTE ON EDIT-PROFILE
 app.post("/edit-profile", upload.single("profilepicture"), async (req, res) => {
+  // USED FOR MULTIPLE THINGS, ONE OF THEM MAKING UPLOADING PICTURES POSSIBLE
   if (!req.user) {
+    // IF THE USER IS NOT LOGGED IN, THE USER WILL BE REDIRECTED TO THE HOMEPAGE
     res.redirect("/");
     return;
   }
-  // all information received through req.body (using body-parser) will be stored inside req.user and placed in the database
-  req.user.profilepicture = req.file.filename;
-  req.user.name = req.body.name;
-  req.user.age = req.body.age;
-  req.user.favoriteBooks = req.body["books[]"];
-  req.user.currentBook = req.body.currentBook;
-  await req.user.save();
+
+  // MAKING A DELETE ACCOUNT BUTTON AVAILABLE
+  if (req.body.deleteAccount === "on") {
+    // IF THE CHECKBOX IS CHECKED ON
+    await UserModel.deleteOne({ _id: req.user._id }), req.session.destroy(); // DELETING THE USER CONNECTED TO THE ID AND DESTROYING THE SESSION
+    res.redirect("/"); // AFTERWARDS, THE USER WILL BE REDIRECTED TO THE HOMEPAGE
+    return;
+  }
+  // SOURCE ABOUT DELETE WITH MONGOOSE: https://mongoosejs.com/docs/models.html#deleting
+
+  // ALL INFORMATION THAT IS RECEIVED THROUGH req.body USING body-parser WILL BE STORED INSIDE req.user AND PLACES INSIDE THE DATABASE
+  req.user.profilepicture = req.file.filename; // PROFILE PICTURE
+  req.user.name = req.body.name; // NAME
+  req.user.age = req.body.age; // AGE
+  req.user.favoriteBooks = req.body["books[]"]; // ARRAY OF TOP 3 BOOKS
+  req.user.currentBook = req.body.currentBook; // CURRENT BOOK
+  await req.user.save(); // SAVE BUTTON
   res.render("edit-profile", {
+    // RENDERING THE UPDATED EDIT-PROFILE PAGE
     title: "Edit Profile Page",
     user: req.user,
   });
 });
 
-// running the application
+// RUNNING THE APPLICATION
 async function run() {
-  // wait for mongoose before starting server
+  // WAITING FOR MONGOOSE BEFORE ACTUALLY STARTING THE SERVER
   await mongoose.connect(MONGO_URL, {
-    // avoid deprecation warnings
+    // AVOIDING DEPRECATION WARNINGS
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
 
-  // the express server will run on port 8000
+  // THE EXPRESS SERVER WILL RUN ON PORT 8000
   app.listen(8000, () => {
-    // immediately give url to click open through terminal
+    // THIS IMMEDIATELY GIVES YOU THE URL TO CLICK OPEN THROUGH THE TERMINAL
     console.log("Your app is now running on http://localhost:8000");
   });
 }
 
-// do not forget to run the function
-// this is needed because mongoose.connect uses await and therefore it can not be at the top-level scope and should be inside an async function
+// DO NOT FORGET TO RUN THE FUNCTION
+// THIS IS NEEDED BECAUSE mongoose.connect USES AWAIT AND THEREFORE IT CAN NOT BE AT THE TOP-LEVEL SCOPE AND SHOULD BE INSIDE AN ASYNC FUNCTION
 run();
