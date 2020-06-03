@@ -1,3 +1,5 @@
+![Logo](https://github.com/IrisvanOllefen/novel-love/blob/master/readme-images/Schermafbeelding%202020-06-03%20om%2012.12.48.png)
+
 # Novel Love
 
 Find Love by talking about what you love: Books!
@@ -14,28 +16,31 @@ People who are interested in dating and having meaningful conversations, can use
 
 On the homepage, in the header. You can select a user.
 
+![Select User](https://github.com/IrisvanOllefen/novel-love/blob/master/readme-images/Schermafbeelding%202020-06-03%20om%2012.12.13.png)
 
 ### Feature 2: Edit profile
 
 Your profile settings that are already known in the database will show up, but you can obviously adjust these to however you like!
 
+![Edit Profile](https://github.com/IrisvanOllefen/novel-love/blob/master/readme-images/Schermafbeelding%202020-06-03%20om%2012.11.43.png)
 
 ### Feature 3: Upload Profile Picture
 
 Using the multer package, I have made it possible to upload a profile picture!
 
+![Upload Profile Picture](https://github.com/IrisvanOllefen/novel-love/blob/master/readme-images/Schermafbeelding%202020-06-03%20om%2012.11.58.png)
 
 ### Feature 4: Delete Account
 
 And when you have found the love of your life and no longer need the Novel Love website to find somebody, you can safely delete your account and all your information will be removed from the database.
+
+![Delete Account](https://github.com/IrisvanOllefen/novel-love/blob/master/readme-images/Schermafbeelding%202020-06-03%20om%2012.09.50.png)
 
 ## Tech Stack
 
 - __Runtime__ Nodejs
 - __Server__ Expressjs
 - __Database__ MongoDB (+ Mongoose)
-
-## Installing
 
 ### Dependencies used
 
