@@ -8,7 +8,6 @@ const UserSchema = new Schema({
   profilepicture: String,
   name: String,
   age: Number,
-  // what if I turn it in to an object and give it the object name it has in the database? is that a possibility?
   favoriteBooks: [String],
   currentBook: String,
   matches: [{ type: Schema.Types.ObjectId, ref: "User" }],

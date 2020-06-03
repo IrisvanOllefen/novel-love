@@ -116,6 +116,7 @@ app.get("/edit-profile", async (req, res) => {
 
 // POST METHOD ROUTE ON EDIT-PROFILE
 app.post("/edit-profile", upload.single("profilepicture"), async (req, res) => {
+  console.log(req.body);
   // USED FOR MULTIPLE THINGS, ONE OF THEM MAKING UPLOADING PICTURES POSSIBLE
   if (!req.user) {
     // IF THE USER IS NOT LOGGED IN, THE USER WILL BE REDIRECTED TO THE HOMEPAGE
@@ -133,10 +134,12 @@ app.post("/edit-profile", upload.single("profilepicture"), async (req, res) => {
   // SOURCE ABOUT DELETE WITH MONGOOSE: https://mongoosejs.com/docs/models.html#deleting
 
   // ALL INFORMATION THAT IS RECEIVED THROUGH req.body USING body-parser WILL BE STORED INSIDE req.user AND PLACES INSIDE THE DATABASE
-  req.user.profilepicture = req.file.filename; // PROFILE PICTURE
+  if (req.file) {
+    req.user.profilepicture = req.file.filename; // PROFILE PICTURE
+  }
   req.user.name = req.body.name; // NAME
   req.user.age = req.body.age; // AGE
-  req.user.favoriteBooks = req.body["books[]"]; // ARRAY OF TOP 3 BOOKS
+  req.user.favoriteBooks = req.body.books; // ARRAY OF TOP 3 BOOKS
   req.user.currentBook = req.body.currentBook; // CURRENT BOOK
   await req.user.save(); // SAVE BUTTON
   res.render("edit-profile", {
