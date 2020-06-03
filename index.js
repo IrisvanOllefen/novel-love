@@ -156,7 +156,7 @@ async function run() {
   });
 
   // THE EXPRESS SERVER WILL RUN ON PORT 8000
-  app.listen(8000, () => {
+  app.listen(process.env.PORT || 8000, () => {
     // THIS IMMEDIATELY GIVES YOU THE URL TO CLICK OPEN THROUGH THE TERMINAL
     console.log("Your app is now running on http://localhost:8000");
   });
