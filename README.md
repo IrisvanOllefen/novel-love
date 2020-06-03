@@ -38,6 +38,21 @@ And when you have found the love of your life and no longer need the Novel Love 
 
 ![Delete Account](https://github.com/IrisvanOllefen/novel-love/blob/master/readme-images/Schermafbeelding%202020-06-03%20om%2012.09.50.png)
 
+## Overview of Data inside Database
+
+``` javascript
+const UserSchema = new Schema({
+  profilepicture: String,
+  name: String,
+  age: Number,
+  favoriteBooks: [String],
+  currentBook: String,
+  matches: [{ type: Schema.Types.ObjectId, ref: "User" }],
+});
+```
+
+This is the only data inside the database and I have put it inside a schema using Mongoose.
+
 ## Tech Stack
 
 - __Runtime__ Nodejs
