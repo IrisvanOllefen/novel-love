@@ -7,7 +7,7 @@
             <label for="">
                 Profile Picture
                 <input type="file" name="profilepicture" accept="image/png, image/jpeg">
-                <img src="/uploads/{{user.profilepicture}}" alt="Profile Picture" width="200">
+                <img src="/uploads/{{user.profilepicture}}" alt="Profile Picture" width="200" id="uploadedimage">
             </label>
             <label for="">
                 Name
@@ -49,4 +49,5 @@
         </div>
     </form>
 </main>
+<script src="script/fe-script.js"></script>
 {{/layout}}
