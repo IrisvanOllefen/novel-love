@@ -1,13 +1,3 @@
-// const newUploadedFunction = () => {
-//   const upload = document.querySelector("#uploadedimage");
-//   // if new picture is uploaded, show new picture in 'old' place
-
-//   // else, do nothing
-// };
-
-// get the upload file
-// make sure that when you click select in finder or somewhere on the page that it shows the picture
-
 // POP UP WHEN YOU LEAVE PAGE AND STILL HAVE UNSAVED CHANGES
 
 let changed = false;
