@@ -1,28 +1,31 @@
 // POP UP WHEN YOU LEAVE PAGE AND STILL HAVE UNSAVED CHANGES
 
-let changed = false;
+let changed = false; // declaring this in the global scope to make it usable in multiple function scopes
 
-window.addEventListener("beforeunload", function (e) {
+window.addEventListener("beforeunload", function (event) {
   if (changed) {
-    // Cancel the event
-    e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
-    // Chrome requires returnValue to be set
-    e.returnValue = "";
+    // if changed = false, the default should be prevented, otherwise you'll ALWAYS see the pop-up.
+    event.preventDefault();
+    event.returnValue = ""; // returnValue is a requirement from Chrome
   }
 });
 
-// bron: https://developer.mozilla.org/nl/docs/Web/API/WindowEventHandlers/onbeforeunload
+// source: https://developer.mozilla.org/nl/docs/Web/API/WindowEventHandlers/onbeforeunload
 
 document.querySelectorAll("input").forEach(function (element) {
+  // looking for all input elements and adding a function to each of them
   element.addEventListener("keyup", function (event) {
-    changed = true;
-    console.log(event);
+    // adding the keyup event and another function
+    changed = true; // if there is a keyup, the value of changed is set to true
+    console.log(event); // logging to console to check
   });
 });
 
+// prevent pop up from showing when save button is clicked
 document.querySelectorAll("form").forEach(function (element) {
   element.addEventListener("submit", function (event) {
-    changed = false;
+    // adding submit event and function
+    changed = false; // if the form is submitted, the value of changed turns back in to false
     console.log(event);
   });
 });
@@ -30,13 +33,15 @@ document.querySelectorAll("form").forEach(function (element) {
 // IMMEDIATELY SHOW NEW UPLOADED PROFILE PICTURE
 
 document.querySelectorAll("input[type=file]").forEach(function (element) {
+  // using a CSS selector
   element.addEventListener("change", function (event) {
-    const reader = new FileReader(); // FileReader is eigenlijk een API van de browser waarmee je kan zeggen "Hey ik wil dit bestand uitlezen"
-    reader.readAsDataURL(event.target.files[0]);
+    // adding the change event and function
+    const reader = new FileReader(); // fileReader is kind of like an API from the browser which you can ask to look or read a file
+    reader.readAsDataURL(event.target.files[0]); // get the first item/value from the array (there is only one item/value) and read it as a data URL
     reader.onload = function (e) {
-      document.getElementById("uploadedimage").src = e.target.result;
+      document.getElementById("uploadedimage").src = e.target.result; // the `reader.onload` gives another function with the parameter `e`, which gets the source from the uploaded image by it's ID and calls it `e.target.result`.
     };
   });
 });
 
-// bron: https://stackoverflow.com/questions/30424121/get-blob-image-from-file-input-using-jquery
+// source: https://stackoverflow.com/questions/30424121/get-blob-image-from-file-input-using-jquery
